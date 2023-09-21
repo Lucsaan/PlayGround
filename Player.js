@@ -10,7 +10,7 @@ class Player {
     }
 
     greet() {
-        console.log(`Hallo, ${this.name}!\n`);
+        console.log(`\nHallo, ${this.name}!\n`);
     }
 }
 

@@ -1,5 +1,6 @@
 const readline = require('readline');
 const Player = require('./Player');
+const Game = require('./Game');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -18,17 +19,52 @@ let playerToCreate = {};
 let playerCount = 0;
 let actualCount = 0;
 
+let PlayerMove = {
+    1: 'Rock',
+    2: 'Paper',
+    3: 'Scissors'
+}
+
+newPlayer(); // Starten Sie die Abfrage
+
 function newPlayer() {
-    console.log('Sie können durch eintippen des wortes "ende" jederzeit das programm beenden!');
+    console.log('\n\nMit >"Ende"< programm beenden!');
     setPlayerCount();
 }
 
 function setPlayerCount() {
-    rl.question('Geben Sie die Anzahl der Mitspieler an: ', (count) => {
+    rl.question('\nGeben Sie die >Anzahl< der Mitspieler an: ', (count) => {
         evaluateStop(count);
-        playerCount = count;
-        setNewPlayer();
+        let newcount = count.trim();
+        if (newcount === ''){
+                console.log('Sie müssen eine Zahl eingeben!');
+                setPlayerCount();
+                return;
+        } else if (count < 9999) {
+                playerCount = count;
+                if (count < 2) {
+                    setNewComputer();
+                } else {
+                    setNewPlayer();
+                }
+        } else {
+            console.log('Sie müssen eine Zahl eingeben!');
+            setPlayerCount();
+        }
     });
+}
+
+function setNewComputer() {
+    if (playerCount <= 1) {
+        playerToCreate = {
+            name: 'Clyde',
+            type: 'Computer'
+        };
+
+        console.log("Ein Computer wurde hinzugefügt...\n");
+        createNewPlayerInstance();
+        return
+    }
 }
 
 function setNewPlayer() {
@@ -38,7 +74,7 @@ function setNewPlayer() {
             name: '',
             type: ''
         };
-        
+        actualCount++;
         setPlayerName();
         return;
     }
@@ -46,13 +82,13 @@ function setNewPlayer() {
     // Wenn sämtliche Mitspieler eingetragen sind, machen wir eine kurze Liste der Mitspieler
     console.log("Wir haben folgende Mitspieler\n---------------------------------------------------");
     players.forEach(player => {
-       console.log("Name: " + player.name + ' (Typ: ' + player.type + ")\n");
+       console.log("Name: " + player.name + ' (' + player.type + ")\n");
     });
     console.log('---------------------------------------------------');
 }
 
 function setPlayerName() {
-    rl.question('Geben Sie den Namen des Mitspielers ein: ', (name) => {
+    rl.question('\nGeben Sie den >Namen< des Mitspielers ein: ', (name) => {
         evaluateStop(name);
         playerToCreate.name = name;
         setPlayerType();
@@ -60,7 +96,7 @@ function setPlayerName() {
 }
 
 function setPlayerType() {
-    rl.question('Ist dieser Mitspieler ein Mensch oder ein Computer? (1 = Mensch; 2 = Computer ): ', (typeID) => {
+    rl.question('\nIst dieser Mitspieler ein Mensch = (1) ,oder ein Computer = (2)?: ', (typeID) => {
         evaluateStop(typeID)
         if (typeID < 1 || typeID > 2) {
             console.log('Bitte richtige Nummer eintippen');
@@ -77,15 +113,12 @@ function createNewPlayerInstance() {
     let newPlayer = new Player(playerToCreate.name, playerToCreate.type);
     newPlayer.greet();
     players.push(newPlayer);
-    actualCount++;
     setNewPlayer();
 }
 
 function evaluateStop(entry) {
     if (entry.toLowerCase() === 'ende') {
-        console.log('Programm beendet.');
+        console.log('>Programm beendet.<');
         rl.close();
     }
 }
-
-setPlayerCount(); // Starten Sie die Abfrage

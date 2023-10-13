@@ -1,6 +1,6 @@
 const readline = require('readline');
 const Player = require('./Player');
-const Game = require('./Game');
+const RockPaperScissors = require('./RockPaperScissors');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -13,8 +13,13 @@ let PlayerType = {
 }
 
 let players = [];
-
+let move = "Hallo"
 let playerToCreate = {};
+
+// Kann später wieder weg
+let player = {
+    name: 'Hallo'
+}
 
 let playerCount = 0;
 let actualCount = 0;
@@ -40,7 +45,7 @@ function setPlayerCount() {
                 console.log('Sie müssen eine Zahl eingeben!');
                 setPlayerCount();
                 return;
-        } else if (count < 9999) {
+        } else if (count >=1) {
                 playerCount = count;
                 if (count < 2) {
                     setNewComputer();
@@ -111,6 +116,7 @@ function setPlayerType() {
 
 function createNewPlayerInstance() {
     let newPlayer = new Player(playerToCreate.name, playerToCreate.type);
+    newPlayer.wins++;
     newPlayer.greet();
     players.push(newPlayer);
     setNewPlayer();
